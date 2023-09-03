@@ -41,8 +41,8 @@ typedef struct TrainingSet {
     int num_data;
 } TrainingSet;
 
-// function to create a neuron
-Neuron create_neuron(int num_weights) {
+// Function to create a single neuron with random weights
+Neuron create_neuron_with_random_weights(int num_weights) {
     Neuron neuron;
     neuron.bias = 0.0;
     neuron.output = 0.0;
@@ -57,58 +57,77 @@ Neuron create_neuron(int num_weights) {
         // Initialize weights with random values between -1 and 1
         neuron.weights[i] = (2.0 * ((double)rand() / RAND_MAX)) - 1.0;
     }
-    
+
     return neuron;
 }
 
-// function to create a layer
-Layer create_layer(int num_neurons, int num_weights) {
+// Function to create a layer with random-weight neurons
+Layer create_layer_with_random_weights(int num_neurons, int num_weights) {
     Layer layer;
     layer.num_neurons = num_neurons;
     layer.neurons = malloc(num_neurons * sizeof(Neuron));
+    
     if (layer.neurons == NULL) {
         printf("Error: malloc failed\n");
         exit(1);
     }
+
     for (int i = 0; i < num_neurons; i++) {
-        layer.neurons[i] = create_neuron(num_weights);
+        layer.neurons[i] = create_neuron_with_random_weights(num_weights);
     }
+
     return layer;
 }
-// function to create a network
-Network create_network(int num_layers, int *num_neurons, int *num_weights) {
-    Network network;
-    network.num_layers = num_layers;
-    network.layers = malloc(num_layers * sizeof(Layer));
-    if (network.layers == NULL) {
+
+// Function to create a layer with random-weight neurons
+Layer create_random_layer(int num_neurons, int num_weights) {
+    Layer layer;
+    layer.num_neurons = num_neurons;
+    layer.neurons = malloc(num_neurons * sizeof(Neuron));
+    
+    if (layer.neurons == NULL) {
         printf("Error: malloc failed\n");
         exit(1);
     }
-    for (int i = 0; i < num_layers; i++) {
-        network.layers[i] = create_layer(num_neurons[i], num_weights[i]);
+
+    for (int i = 0; i < num_neurons; i++) {
+        layer.neurons[i] = create_neuron_with_random_weights(num_weights);
     }
-    return network;
+
+    return layer;
 }
 
-// function to create a data
+// Function to create a data structure with memory error handling
 Data create_data(int num_inputs, int num_outputs) {
     Data data;
     data.inputs = malloc(num_inputs * sizeof(double));
     data.outputs = malloc(num_outputs * sizeof(double));
+
+    if (data.inputs == NULL || data.outputs == NULL) {
+        printf("Error: malloc failed\n");
+        exit(1);
+    }
+
     return data;
 }
 
-// function to create a training set
+// Function to create a training set with memory error handling
 TrainingSet create_training_set(int num_data, int num_inputs, int num_outputs) {
     TrainingSet training_set;
     training_set.num_data = num_data;
     training_set.data = malloc(num_data * sizeof(Data));
+
+    if (training_set.data == NULL) {
+        printf("Error: malloc failed\n");
+        exit(1);
+    }
+
     for (int i = 0; i < num_data; i++) {
         training_set.data[i] = create_data(num_inputs, num_outputs);
     }
+
     return training_set;
 }
-
 
 // function to generate a random double between 0 and 1
 double random_double() {
