@@ -41,20 +41,23 @@ typedef struct TrainingSet {
     int num_data;
 } TrainingSet;
 
-
 // function to create a neuron
 Neuron create_neuron(int num_weights) {
     Neuron neuron;
     neuron.bias = 0.0;
     neuron.output = 0.0;
     neuron.weights = malloc(num_weights * sizeof(double));
+    
     if (neuron.weights == NULL) {
         printf("Error: malloc failed\n");
         exit(1);
     }
+
     for (int i = 0; i < num_weights; i++) {
-        neuron.weights[i] = 0.0;
+        // Initialize weights with random values between -1 and 1
+        neuron.weights[i] = (2.0 * ((double)rand() / RAND_MAX)) - 1.0;
     }
+    
     return neuron;
 }
 
@@ -72,7 +75,6 @@ Layer create_layer(int num_neurons, int num_weights) {
     }
     return layer;
 }
-
 // function to create a network
 Network create_network(int num_layers, int *num_neurons, int *num_weights) {
     Network network;
